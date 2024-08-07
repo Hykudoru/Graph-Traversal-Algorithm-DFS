@@ -1,3 +1,23 @@
+# A grid of cells contain pipes (╠, ╦, ╝, etc) that lead some water source (*) to various sinks (A, B, C, etc).
+# This is my own implementation to finding which sinks are connected to the source. 
+
+# My algorithm uses a node like tree structure. Here is the jist of it:
+# - Read file and create a dictionary for cell data
+# - Get and create all sink nodes.
+# - Find adjacent cells (if any).
+# - Make sure the cell comparing has not been traversed and somehow looped back to the root node.
+# - Check if this cell's edge is open in the direction of the other cell and vice-versa.
+# - Add new cell Node if both edges are open. This will also be recursive when creating a new Node.
+# - Any root sink node that encounters an '*' will be added to the connected sinks we're tracking. 
+# Node MaxDepth can be tweaked to allow longer path traversal.           
+
+# I'm a big fan of matrix math, so I used matrices for each sink and pipe character to compare edge openings.
+# How it works: 
+# If we have an arbitrary adjacent cell say to the right of a sink 'A', we can multiply the 'A' Symbol Matrix by 'Right' matrix [0,1,0,0] to check if the right edge is open.
+# Then we do the same with the adjacent cell's Symbol Matrix by the 'Left' Matrix [0,0,0,-1] to ensure this edge is also open.
+# If both are open, these 2 cells connect.
+# For example: Matrix [1, 1, -1, -1] corresponds to [up, right, down, left] and means all directions are open.
+
 class Point:
     def __init__(self, x, y):
         self.x = x
@@ -161,21 +181,3 @@ def findSinksToSource(filePath):
         return ''.join(found).upper()
 
 print(findSinksToSource("data.txt"))
-
-
-# My algorithm uses a node like tree structure. Here is the jist of it:
-# - Read file and create a dictionary for cell data
-# - Get and create all sink nodes.
-# - Find adjacent cells (if any).
-# - Make sure the cell comparing has not been traversed and somehow looped back to the root node.
-# - Check if this cell's edge is open in the direction of the other cell and vice-versa.
-# - Add new cell Node if both edges are open. This will also be recursive when creating a new Node.
-# - Any root sink node that encounters an '*' will be added to the connected sinks we're tracking. 
-# Node MaxDepth can be tweaked to allow longer path traversal.           
-
-# I'm a big fan of matrix math, so I used matrices for each sink and pipe character to compare edge openings.
-# How the matrix masking works: 
-# If we have an arbitrary adjacent cell say to the right of a sink 'A', we can multiply the 'A' Symbol Matrix by 'Right' matrix [0,1,0,0] to check if the right edge is open.
-# Then we do the same with the adjacent cell's Symbol Matrix by the 'Left' Matrix [0,0,0,-1] to ensure this edge is also open.
-# If both are open, these 2 cells connect.
-# For example: Matrix [1, 1, -1, -1] corresponds to [up, right, down, left] and means all directions are open.
